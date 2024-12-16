@@ -27,3 +27,13 @@
         transform: rotate(180deg);
     }
 }
+
+@media (max-width: 768px) {
+    .control {
+        width: 100% !important;
+    }
+
+    .mantine-Menu-dropdown {
+        width: 100% !important;
+    }
+}

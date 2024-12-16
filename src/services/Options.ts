@@ -2,7 +2,8 @@ export const balconyOptions = [
     { label: 'Лоджия' },
     { label: 'Балкон' },
     { label: 'Балкон и Лоджия' },
-    { label: 'Несколько балконов или лоджий' }
+    { label: 'Несколько балконов или лоджий' },
+    { label: 'Нет' }
 ];
 
 export const bathroomOptions = [

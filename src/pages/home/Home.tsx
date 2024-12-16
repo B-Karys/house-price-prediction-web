@@ -1,15 +1,16 @@
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import '@mantine/notifications/styles.css';
-import { Container, Title, Space, Button, Group, Input, Text, MultiSelect, Checkbox, SimpleGrid } from '@mantine/core';
+import classes from './Home.module.css'
+import { Container, Title, Space, Button, Input, Text, MultiSelect, Checkbox, SimpleGrid } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { balconyOptions, bathroomOptions, conditionOptions, districtOptions, furnitureOptions, houseMaterialOptions, roomOptions, securityOptions } from '../../services/Options';
 import { YearPickerInput } from '@mantine/dates';
+import { balconyOptions, bathroomOptions, conditionOptions, districtOptions, furnitureOptions, houseMaterialOptions, roomOptions, securityOptions } from '../../services/Options';
 import { DistrictDropdown, Dropdown } from '../../components/dropdown/Dropdown';
 import { CheckboxGroup } from '../../components/checkbox-group/CheckboxGroup';
 import YandexMap from '../../components/map/YandexMap';
-import { useState } from 'react';
-import { predict } from '../../services/Api';
+import { healthcheck, predict } from '../../services/Api';
+import { useState, useEffect } from 'react';
 
 export function Home() {
     const [apartment, setApartment] = useState<{ lat: number; lon: number; houseNumber: string; street: string } | null>(null);
@@ -28,10 +29,27 @@ export function Home() {
     const [security, setSecurity] = useState<string[]>([]);
     const [isPledged, setIsPledged] = useState(false);
     const [wasFormerHostel, setWasFormerHostel] = useState(false);
+    const [modelType, setModelType] = useState<string | null>(null);
+    const [availableModels, setAvailableModels] = useState<{ label: string }[]>([]);
+
+    useEffect(() => {
+        async function fetchModels() {
+            try {
+                const response = await healthcheck();
+                const formattedModels = response.models_loaded.map((model: string) => ({
+                    label: model.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase())
+                }));
+                setAvailableModels(formattedModels);
+            } catch (error) {
+                notifications.show({ title: 'Ошибка', message: 'Не удалось загрузить список моделей', color: 'red', position: 'bottom-right' });
+            }
+        }
+        fetchModels();
+    }, []);
 
     const handleSubmit = async () => {
-        if (!apartment || !district || !year || !square || !ceilingHeight || !room || !floor || !totalFloors || !balcony || !bathroom || !houseMaterial || !condition || !furniture) {
-            notifications.show({ title: 'Ошибка', message: 'Все поля и карта должны быть заполнены', color: 'red' });
+        if (!apartment || !district || !year || !square || !ceilingHeight || !room || !floor || !totalFloors || !balcony || !bathroom || !houseMaterial || !condition || !furniture || !modelType) {
+            notifications.show({ title: 'Ошибка', message: 'Все поля и карта должны быть заполнены', color: 'red', position: 'bottom-right' });
             return;
         }
 
@@ -59,11 +77,13 @@ export function Home() {
             lat: apartment.lat,
             lon: apartment.lon
         };
-
         console.log(data);
 
+        const formattedModelName = modelType.replace(/ /g, '_').toLowerCase();
+        console.log(formattedModelName);
+
         try {
-            const response = await predict(data, 'all');
+            const response = await predict(data, formattedModelName || 'all');
             const formattedPrice = response.predicted_price.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
             notifications.show({
                 title: 'Успешно',
@@ -76,10 +96,11 @@ export function Home() {
                     </>
                 ),
                 color: 'green',
-                autoClose: 10000
+                autoClose: 10000,
+                position: 'bottom-right'
             });
         } catch (error) {
-            notifications.show({ title: 'Ошибка', message: 'Сервер недоступен', color: 'red' });
+            notifications.show({ title: 'Ошибка', message: 'Сервер недоступен', color: 'red', position: 'bottom-right' });
         }
     };
 
@@ -104,7 +125,7 @@ export function Home() {
 
             <Space h="md" />
 
-            <Text size="sm" mb="xs">Количество Комнат</Text>
+            <Text size="sm" mb="xs">Количество комнат</Text>
             <CheckboxGroup options={roomOptions} onChange={setRoom} />
 
             <Space h="md" />
@@ -197,11 +218,26 @@ export function Home() {
 
             <Space h="xl" />
 
-            <Group style={{ justifyContent: 'center' }}>
-                <Button onClick={handleSubmit} variant="filled" color="blue">
-                    Predict Price
-                </Button>
-            </Group>
+            <SimpleGrid className={classes.simpleGrid}>
+                <div>
+                    <Text size="sm" mb="xs">Модель для прогнозирования</Text>
+                    <Dropdown
+                        data={availableModels}
+                        onSelect={(item) => setModelType(item.label.toLocaleLowerCase())}
+                    />
+                </div>
+
+                <div className={classes.buttonContainer}>
+                    <Button
+                        onClick={handleSubmit}
+                        variant="filled"
+                        color="blue"
+                        className={classes.button}
+                    >
+                        Predict Price
+                    </Button>
+                </div>
+            </SimpleGrid>
 
             <Space h="xl" />
         </Container>
