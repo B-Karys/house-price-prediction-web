@@ -1,50 +1,36 @@
-# React + TypeScript + Vite
+<h1>🏡 Apartment Price Prediction</h1>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<p>This project is a web application for predicting apartment prices based on various features such as size, location, year built, and more. It uses a <strong>machine learning model</strong> hosted on a backend API.</p>
 
-Currently, two official plugins are available:
+<h2>📦 Features</h2>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+<ul>
+    <li>Interactive form for inputting apartment details</li>
+    <li>Integration with Yandex Maps for selecting a location</li>
+    <li>Real-time notifications for success and error messages</li>
+</ul>
 
-## Expanding the ESLint configuration
+<h2>🚀 How to Run</h2>
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+<h3>📋 <strong>Step 1: Clone the Repository</strong></h3>
+<pre><code>git clone git clone https://github.com/B-Karys/house-price-prediction-web.git
+cd house-price-prediction-web
+</code></pre>
 
-- Configure the top-level `parserOptions` property like this:
+<h3>📋 <strong>Step 2: Install dependencies</strong></h3>
+<pre><code>npm install</code></pre>
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+<h3>📋 <strong>Step 3: Start the development server</strong></h3>
+<pre><code>npm run dev</code></pre>
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+<h2>⚙️ Configuration</h2>
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+<p>To use the Yandex Maps API, add your <strong>API Key</strong> in the map component</p>
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+<h2>👩‍💻 Technologies Used</h2>
+
+<ul>
+    <li>React + Vite</li>
+    <li>Mantine UI</li>
+    <li>Yandex Maps API</li>
+</ul>
