@@ -7,7 +7,7 @@ interface ApartmentDetails {
 export const healthcheck = async (): Promise<any> => {
     const response = await fetch(`${BASE_URL}/healthcheck`, {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "ngrok-skip-browser-warning": "true" },
     });
     if (!response.ok) {
         const error = await response.text();
@@ -20,7 +20,7 @@ export const healthcheck = async (): Promise<any> => {
 export const predict = async (data: ApartmentDetails, model: string): Promise<any> => {
     const response = await fetch(`${BASE_URL}/predict?model=${model}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "ngrok-skip-browser-warning": "true" },
         body: JSON.stringify(data),
     });
     if (!response.ok) {
